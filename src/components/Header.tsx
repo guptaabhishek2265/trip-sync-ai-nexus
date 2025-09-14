@@ -7,12 +7,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Zap, User, Settings, LogOut } from "lucide-react";
+import { Zap, User, Settings, LogOut, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { mockUserProfile } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
 
 const Header = () => {
   const navigate = useNavigate();
+  const [isDark, setIsDark] = useState(true);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setIsDark(savedTheme === 'dark');
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+    } else {
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    document.documentElement.classList.toggle('dark', newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+  };
 
   return (
     <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm">
@@ -29,7 +48,21 @@ const Header = () => {
           </h1>
         </div>
 
-        <DropdownMenu>
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleTheme}
+            className="p-2 hover:bg-muted/50"
+          >
+            {isDark ? (
+              <Sun className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+            ) : (
+              <Moon className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+            )}
+          </Button>
+
+          <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative p-2 rounded-full hover:bg-muted/50">
               <Avatar className="w-8 h-8">
@@ -67,6 +100,7 @@ const Header = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
     </header>
   );

@@ -18,7 +18,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <div className="dark"> {/* Force dark mode */}
+        <div>
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
